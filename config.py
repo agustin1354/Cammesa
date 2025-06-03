@@ -49,15 +49,6 @@ REGIONS = {
     if "id" in item and "nombre" in item
 }
 
-#EMAIL_ALERT_TO = "agustin.difilippo@telefonica.com"
-#EMAIL_FROM = "agustin1354@gmail.com"
-#EMAIL_PASSWORD = "njtc czfx ouad rewu"  # Usa App Password si usas Gmail
-
-# Configuración de Twilio WhatsApp
-#TWILIO_ACCOUNT_SID = "AC929bfda29a526444bd89d8b9fed94dba"
-#TWILIO_AUTH_TOKEN = "683c4d0b609573aa4a0c22cfbedf4f56"
-#TWILIO_WHATSAPP_FROM = "whatsapp:+14155238886"  # Número de Twilio
-#WHATSAPP_TO = "whatsapp:+5491136957618"       # Tu número de WhatsApp
 
 import os
 
