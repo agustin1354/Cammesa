@@ -1,0 +1,8 @@
+requests
+python-dotenv
+pywhatkit
+schedule
+smtplib
+matplotlib
+pillow
+twilio
