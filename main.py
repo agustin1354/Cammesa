@@ -62,10 +62,4 @@ def job():
 
 
 if __name__ == "__main__":
-    print("🚀 Iniciando sistema de alerta por región")
-    job()  # Ejecutar ahora
-#    schedule.every(5).minutes.do(job)  # Programar ejecución periódica
-#    print("🔁 Esperando próxima ejecución automática...")
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+    job()  # Ejecutar una sola vez
