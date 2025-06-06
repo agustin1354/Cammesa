@@ -45,7 +45,35 @@ def job():
                 f"Causas:\n" + "\n".join(reasons)
             )
             subject_email = f"⚠️ Alerta - Caída en Demanda [{region_name}] ({THRESHOLD_PERCENTAGE}% o más)"
-            send_email(subject_email, mensaje_email)
+           
+
+            try:
+    send_email(subject_email, mensaje_email)
+    log_alert(
+        filepath="Alertas CAMMESA.csv",
+        region_id=region_id,
+        region_name=region_name,
+        hoy=current,
+        ayer=yesterday,
+        semana_anterior=last_week,
+        porcentaje_ayer=((yesterday - current) / yesterday * 100),
+        porcentaje_semana=((last_week - current) / last_week * 100),
+        medio="email",
+        estado="exitoso"
+    )
+except Exception as e:
+    log_alert(
+        filepath="Alertas CAMMESA.csv",
+        region_id=region_id,
+        region_name=region_name,
+        hoy=current,
+        ayer=yesterday,
+        semana_anterior=last_week,
+        porcentaje_ayer=((yesterday - current) / yesterday * 100),
+        porcentaje_semana=((last_week - current) / last_week * 100),
+        medio="email",
+        estado=f"fallido: {str(e)}"
+    )
 
             # Enviar por WhatsApp
             try:
