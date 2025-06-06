@@ -30,10 +30,11 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: |
           # 1. Verificar si ya existe el archivo CSV
-          if [ -f "Alertas_CAMMESA.csv" ]; then
+          if [ -f "Alertas CAMMESA.csv" ]; then
             echo "📁 Archivo CSV encontrado"
           else
             echo "🆕 Archivo CSV creado"
+            touch Alertas CAMMESA.csv
           fi
 
           # 2. Ejecutar script principal
@@ -42,7 +43,7 @@ jobs:
           # 3. Si hay cambios, subirlos a GitHub
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
-          git add Alertas_CAMMESA.csv
+          git add Alertas CAMMESA.csv
 
           git diff --cached --exit-code
           if [ $? -eq 0 ]; then
