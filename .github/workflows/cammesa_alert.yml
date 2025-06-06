@@ -46,24 +46,29 @@ jobs:
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
+          # Verificar si existe el archivo CAMMESA.csv y tiene contenido
           if [ -f "CAMMESA.csv" ]; then
-            size=$(stat -c%s CAMMESA.csv)
+            size=$(stat -c%s CAMMESA.csv 2>/dev/null || echo 0)
+
             if [ "$size" -gt 0 ]; then
               git add CAMMESA.csv
 
+              # Verificar si hay cambios reales
               git diff --staged --quiet
               if [ $? -eq 1 ]; then
                 git commit -m "feat(data): actualizar CAMMESA.csv"
-                
+
                 # Configurar Git con GITHUB_TOKEN para poder hacer push
                 git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+                # Hacer push solo si hay conexión
                 git push origin main
                 echo "✅ Archivo actualizado en GitHub"
               else
-                echo "📎 No hubo cambios reales → no se hizo push"
+                echo "📎 No hubo cambios reales → omitiendo commit"
               fi
             else
-              echo "📎 Archivo CSV está vacío"
+              echo "📎 Archivo CSV vacío"
             fi
           else
             echo "❌ Archivo CAMMESA.csv no encontrado"
