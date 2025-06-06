@@ -3,7 +3,7 @@
 from data_fetcher import get_demand_comparison_values
 from detector import check_peak
 from notifier import send_email
-from whatsapp_notifier import send_whatsapp_alert
+#from whatsapp_notifier import send_whatsapp_alert # Desactivado temporalmente
 from twilio.rest import Client
 from config import THRESHOLD_PERCENTAGE, REGIONS
 import time
@@ -79,13 +79,13 @@ def job():
                 estado=f"fallido: {str(e)}"
                 )
           
-            
+            '''
             # Enviar por WhatsApp
             try:
                 send_whatsapp_alert(region_name, current, yesterday, last_week, timestamp)
             except Exception as e:
                 print(f"[{region_id}] ❌ Error al enviar por WhatsApp: {e}")
-
+            '''
         else:
             print(f"[{region_id}] ✅ No se detectaron picos.")
             if len(reasons) > 0:
