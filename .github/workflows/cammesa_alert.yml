@@ -1,9 +1,9 @@
-name: Cammesa Alerta 24/7
+name: Cammesa Alerta Automática
 
 on:
   schedule:
-    - cron: "*/5 * * * *"  # Ejecutar cada 15 minutos
-  workflow_dispatch:  # Permitir ejecución manual desde UI
+    - cron: "*/5 * * * *"  # Cada 5 minutos
+  workflow_dispatch:       # Ejecutar manualmente desde UI
 
 jobs:
   cammesa-alert:
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install requests pandas schedule python-dotenv
 
       - name: Run script
         env:
@@ -32,5 +32,31 @@ jobs:
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
           WHATSAPP_TO: ${{ secrets.WHATSAPP_TO }}
+          RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
         run: |
+          # 1. Ejecutar el script principal
           python main.py
+
+          # 2. Crear carpeta temporal para generar CSV
+          mkdir -p /tmp/alertas
+          cd /tmp/alertas
+
+          # 3. Generar CSV (ejemplo simple)
+          echo "timestamp,region_id,region_name,hoy,ayer,semana_anterior,porcentaje_ayer,porcentaje_semana" > alertas.csv
+          echo "$(date +"%Y-%m-%dT%H:%M:%S"),1002,Total SADI,14000,18000,17500,22.2,20.0" >> alertas.csv
+
+          # 4. Instalar rclone
+          sudo apt-get update && sudo apt-get install -y rclone
+
+          # 5. Escribir configuración de rclone desde secret
+          echo "$RCLONE_CONFIG" > rclone.conf
+
+          # 6. Subir archivo a OneDrive
+          echo "📤 Subiendo archivo a OneDrive..."
+          rclone --config rclone.conf copy alertas.csv onedrive:/Alertas/Cammesa/
+
+          echo "✅ Archivo subido correctamente"
+
+      - name: Clean up
+        run: |
+          rm -rf /tmp/alertas
