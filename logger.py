@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 
-def init_log_file(filepath="Alertas CAMMESA.csv"):
+def init_log_file(filepath="alertas.csv"):
     if not os.path.exists(filepath):
         with open(filepath, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
@@ -16,18 +16,15 @@ def init_log_file(filepath="Alertas CAMMESA.csv"):
                 "hoy",
                 "ayer",
                 "semana_anterior",
-                "porcentaje_hoy_ayer",
-                "porcentaje_hoy_semana",
-                "medio",
-                "estado"
+                "porcentaje_ayer",
+                "porcentaje_semana"
             ])
-        print("✅ Archivo de log creado:", filepath)
+        print(f"✅ Archivo {filepath} creado")
+    else:
+        print(f"ℹ️  Archivo {filepath} ya existe")
 
 
-def log_alert(filepath="Alertas CAMMESA.csv", **kwargs):
-    """
-    Guarda una alerta en el archivo CSV
-    """
+def log_alert(filepath="alertas.csv", **kwargs):
     timestamp = kwargs.get("timestamp", datetime.now().isoformat())
     region_id = kwargs.get("region_id", "")
     region_name = kwargs.get("region_name", "")
@@ -36,8 +33,8 @@ def log_alert(filepath="Alertas CAMMESA.csv", **kwargs):
     semana_anterior = kwargs.get("semana_anterior", "")
     porcentaje_ayer = kwargs.get("porcentaje_ayer", "")
     porcentaje_semana = kwargs.get("porcentaje_semana", "")
-    medio = kwargs.get("medio", "")
-    estado = kwargs.get("estado", "")
+
+    init_log_file(filepath)
 
     with open(filepath, "a", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -49,8 +46,7 @@ def log_alert(filepath="Alertas CAMMESA.csv", **kwargs):
             ayer,
             semana_anterior,
             porcentaje_ayer,
-            porcentaje_semana,
-            medio,
-            estado
+            porcentaje_semana
         ])
+
     print(f"✅ Alerta registrada en {filepath}")
