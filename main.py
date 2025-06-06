@@ -7,8 +7,39 @@ from whatsapp_notifier import send_whatsapp_alert
 from config import THRESHOLD_PERCENTAGE, REGIONS
 import time
 import schedule
+import csv
+from io import StringIO
 
+def generate_csv_in_memory(alerts):
+    """
+    Genera un CSV en memoria como StringIO
+    :param alerts: lista de diccionarios con alertas
+    """
+    output = StringIO()
+    writer = csv.writer(output)
 
+    # Encabezado
+    writer.writerow([
+        "timestamp", "region_id", "region_name",
+        "hoy", "ayer", "semana_anterior",
+        "porcentaje_ayer", "porcentaje_semana"
+    ])
+
+    for alert in alerts:
+        writer.writerow([
+            alert["timestamp"],
+            alert["region_id"],
+            alert["region_name"],
+            alert["hoy"],
+            alert["ayer"],
+            alert["semana_anterior"],
+            alert["porcentaje_ayer"],
+            alert["porcentaje_semana"]
+        ])
+
+    print("✅ CSV generado en memoria")
+    return output.getvalue()
+    
 def job():
     print("🔄 Iniciando revisión de todas las regiones...")
     for region_id, region_name in REGIONS.items():
@@ -45,10 +76,10 @@ def job():
                 f"Causas:\n" + "\n".join(reasons)
             )
             subject_email = f"⚠️ Alerta - Caída en Demanda [{region_name}] ({THRESHOLD_PERCENTAGE}% o más)"
-           
+            send_email(subject_email, mensaje_email)
 
-            try:
-                send_email(subject_email, mensaje_email)
+            '''
+            try:                
                 log_alert(
                 filepath="Alertas CAMMESA.csv",
                 region_id=region_id,
@@ -74,7 +105,8 @@ def job():
                 medio="email",
                 estado=f"fallido: {str(e)}"
                 )
-
+            '''
+            
             # Enviar por WhatsApp
             try:
                 send_whatsapp_alert(region_name, current, yesterday, last_week, timestamp)
