@@ -5,12 +5,13 @@ from detector import check_peak
 from notifier import send_email
 #from whatsapp_notifier import send_whatsapp_alert # Desactivado temporalmente
 #from twilio.rest import Client
-from config import THRESHOLD_PERCENTAGE, REGIONS
+from logger import log_alert
+from config import THRESHOLD_PERCENTAGE, REGIONS, CSV_FILE_PATH
 import time
 import schedule
 import csv
 from io import StringIO
-from logger import log_alert
+
 from datetime import datetime
 
 def job():
@@ -49,36 +50,20 @@ def job():
                 f"Causas:\n" + "\n".join(reasons)
             )
             subject_email = f"⚠️ Alerta - Caída en Demanda [{region_name}] ({THRESHOLD_PERCENTAGE}% o más)"
+            send_email(subject_email, mensaje_email)
             
-
-            try:
-                send_email(subject_email, mensaje_email)
-                log_alert(
-                filepath="Alertas CAMMESA.csv",
-                region_id=region_id,
-                region_name=region_name,
-                hoy=current,
-                ayer=yesterday,
-                semana_anterior=last_week,
-                porcentaje_ayer=((yesterday - current) / yesterday * 100),
-                porcentaje_semana=((last_week - current) / last_week * 100),
-                medio="email",
-                estado="exitoso"
-                )
-            except Exception as e:
-                log_alert(
-                filepath="Alertas CAMMESA.csv",
-                region_id=region_id,
-                region_name=region_name,
-                hoy=current,
-                ayer=yesterday,
-                semana_anterior=last_week,
-                porcentaje_ayer=((yesterday - current) / yesterday * 100),
-                porcentaje_semana=((last_week - current) / last_week * 100),
-                medio="email",
-                estado=f"fallido: {str(e)}"
-                )
-          
+            log_alert(
+            filepath=CSV_FILE_PATH,
+            timestamp=timestamp,
+            region_id=region_id,
+            region_name=region_name,
+            hoy=current,
+            ayer=yesterday,
+            semana_anterior=last_week,
+            porcentaje_ayer=((yesterday - current) / yesterday * 100),
+            porcentaje_semana=((last_week - current) / last_week * 100)
+            )
+                    
             '''
             # Enviar por WhatsApp
             try:
