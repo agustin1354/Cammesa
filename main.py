@@ -79,4 +79,8 @@ def job():
                     print(f"[{region_id}]    - {r}")
 
 if __name__ == "__main__":
-    job()  # Ejecutar una sola vez
+    try:
+        job()
+    except Exception as e:
+        print("❌ Error crítico:", e)
+        raise
