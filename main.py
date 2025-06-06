@@ -10,6 +10,8 @@ import time
 import schedule
 import csv
 from io import StringIO
+from logger import log_alert
+from datetime import datetime
 
 def generate_csv_in_memory(alerts):
     """
