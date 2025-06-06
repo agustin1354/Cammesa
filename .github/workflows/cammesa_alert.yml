@@ -28,28 +28,39 @@ jobs:
           EMAIL_ALERT_TO: ${{ secrets.EMAIL_ALERT_TO }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          
+      - name: Run script and generate CSV
         run: |
-          # 1. Verificar si ya existe el archivo CSV
-          if [ -f "Alertas CAMMESA.csv" ]; then
-            echo "📁 Archivo CSV encontrado"
-          else
-            echo "🆕 Archivo CSV creado"
-            touch Alertas CAMMESA.csv
-          fi
-
-          # 2. Ejecutar script principal
+          # Ejecutar el script principal
           python main.py
 
-          # 3. Si hay cambios, subirlos a GitHub
+          # Verificar si se generó el archivo
+          if [ -f "CAMMESA.csv" ]; then
+            echo "✅ Archivo CAMMESA.csv encontrado"
+            cat CAMMESA.csv
+          else
+            echo "❌ No se encontró CAMMESA.csv"
+          fi
+
+      - name: Commit changes
+        run: |
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
-          git add Alertas CAMMESA.csv
 
-          git diff --cached --exit-code
-          if [ $? -eq 0 ]; then
-            echo "📎 No hubo cambios → no se hace commit"
+          # Solo agregar si existe
+          if [ -f "CAMMESA.csv" ]; then
+            git add CAMMESA.csv
           else
-            git commit -m "Actualizar archivo de alertas"
+            echo "📎 No hay archivo CSV para guardar"
+            exit 0
+          fi
+
+          # Comprobar si hay cambios reales
+          git diff --cached --quiet
+          if [ $? -eq 1 ]; then
+            git commit -m "Actualizar CAMMESA.csv"
             git push origin main
-            echo "✅ Archivo CSV actualizado en GitHub"
+            echo "✅ Archivo actualizado en GitHub"
+          else
+            echo "📎 Sin cambios → no se hizo commit"
           fi
