@@ -41,11 +41,11 @@ jobs:
           python ../main.py
 
           # 3. Verificar si se generó el archivo CSV
-          if [ -f "../alertas.csv" ]; then
+          if [ -f "../Alertas CAMMESA.csv" ]; then
             echo "✅ Archivo alertas.csv encontrado"
-            cat "../alertas.csv"
+            cat "../Alertas CAMMESA.csv"
           else
-            echo "❌ No se encontró el archivo alertas.csv"
+            echo "❌ No se encontró el archivo Alertas CAMMESA.csv"
           fi
 
       - name: Clean up
