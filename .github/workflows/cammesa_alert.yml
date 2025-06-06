@@ -3,7 +3,7 @@ name: Cammesa Alerta Automática
 on:
   schedule:
     - cron: "*/5 * * * *"  # Cada 5 minutos
-  workflow_dispatch:       # Ejecutar manualmente desde UI
+  workflow_dispatch:        # Ejecutar manualmente
 
 jobs:
   cammesa-alert:
@@ -21,21 +21,34 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install requests pandas schedule
 
-      - name: Run script and generate CSV
+      - name: Run script
         env:
           EMAIL_ALERT_TO: ${{ secrets.EMAIL_ALERT_TO }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: |
-          # 1. Ejecutar main.py en la raíz del proyecto
+          # 1. Verificar si ya existe el archivo CSV
+          if [ -f "Alertas_CAMMESA.csv" ]; then
+            echo "📁 Archivo CSV encontrado"
+          else
+            echo "🆕 Archivo CSV creado"
+          fi
+
+          # 2. Ejecutar script principal
           python main.py
 
-          # 2. Verificar si se generó el archivo CSV
-          if [ -f "Alertas CAMMESA.csv" ]; then
-            echo "✅ Archivo CSV encontrado"
-            cat "Alertas CAMMESA.csv"
+          # 3. Si hay cambios, subirlos a GitHub
+          git config --local user.email "github-actions@example.com"
+          git config --local user.name "GitHub Actions"
+          git add Alertas_CAMMESA.csv
+
+          git diff --cached --exit-code
+          if [ $? -eq 0 ]; then
+            echo "📎 No hubo cambios → no se hace commit"
           else
-            echo "❌ No se encontró el archivo CSV"
+            git commit -m "Actualizar archivo de alertas"
+            git push origin main
+            echo "✅ Archivo CSV actualizado en GitHub"
           fi
