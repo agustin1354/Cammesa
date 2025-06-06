@@ -64,4 +64,4 @@ TWILIO_WHATSAPP_FROM = os.getenv("TWILIO_WHATSAPP_FROM")
 WHATSAPP_TO = os.getenv("WHATSAPP_TO")
 
 # Ruta donde se guardará el CSV
-CSV_FILE_PATH = r"C:\Users\difilippoa\OneDrive - Telefonica\Seguimiento Contratistas - Gestiones Proveedores de Energía\Alertas CAMMESA.csv"
+CSV_FILE_PATH = "CAMMESA.csv"
