@@ -4,22 +4,11 @@ import csv
 from datetime import datetime
 import os
 
-def log_alert(filepath=r"C:\Users\difilippoa\OneDrive - Telefonica\Seguimiento Contratistas - Gestiones Proveedores de Energía\Alertas CAMMESA.csv", **kwargs):
-    timestamp = kwargs.get("timestamp", datetime.now().isoformat())
-    region_id = kwargs.get("region_id", "")
-    region_name = kwargs.get("region_name", "")
-    hoy = kwargs.get("hoy", "")
-    ayer = kwargs.get("ayer", "")
-    semana_anterior = kwargs.get("semana_anterior", "")
-    porcentaje_ayer = kwargs.get("porcentaje_ayer", "")
-    porcentaje_semana = kwargs.get("porcentaje_semana", "")
-
-    # Verificar si el archivo ya existe
-    file_exists = os.path.exists(filepath)
-
-    with open(filepath, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not file_exists:
+def init_log_file(filepath):
+    """Crea el archivo CSV si no existe"""
+    if not os.path.exists(filepath):
+        with open(filepath, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
             writer.writerow([
                 "timestamp",
                 "region_id",
@@ -30,6 +19,25 @@ def log_alert(filepath=r"C:\Users\difilippoa\OneDrive - Telefonica\Seguimiento C
                 "porcentaje_ayer",
                 "porcentaje_semana"
             ])
+        print(f"✅ Archivo {filepath} creado")
+
+def log_alert(filepath, **kwargs):
+    """
+    Guarda una nueva fila en el CSV
+    """
+    timestamp = kwargs.get("timestamp", datetime.now().isoformat())
+    region_id = kwargs.get("region_id", "")
+    region_name = kwargs.get("region_name", "")
+    hoy = kwargs.get("hoy", "")
+    ayer = kwargs.get("ayer", "")
+    semana_anterior = kwargs.get("semana_anterior", "")
+    porcentaje_ayer = ((ayer - hoy) / ayer) * 100 if ayer > 0 else 0
+    porcentaje_semana = ((semana_anterior - hoy) / semana_anterior) * 100 if semana_anterior > 0 else 0
+
+    init_log_file(filepath)
+
+    with open(filepath, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
         writer.writerow([
             timestamp,
             region_id,
@@ -37,8 +45,8 @@ def log_alert(filepath=r"C:\Users\difilippoa\OneDrive - Telefonica\Seguimiento C
             hoy,
             ayer,
             semana_anterior,
-            porcentaje_ayer,
-            porcentaje_semana
+            f"{porcentaje_ayer:.1f}",
+            f"{porcentaje_semana:.1f}"
         ])
 
-    print(f"✅ Alerta guardada en {filepath}")
+    print(f"✅ Alerta registrada en {filepath}")
