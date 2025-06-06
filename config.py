@@ -62,3 +62,6 @@ TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_WHATSAPP_FROM = os.getenv("TWILIO_WHATSAPP_FROM")
 WHATSAPP_TO = os.getenv("WHATSAPP_TO")
+
+# Ruta donde se guardará el CSV
+CSV_FILE_PATH = "Alertas CAMMESA.csv"  # Puedes cambiar esto a una carpeta sincronizada con OneDrive
