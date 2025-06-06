@@ -1,7 +1,7 @@
 requests
-python-dotenv
-pywhatkit
 schedule
+python-dotenv
+twilio
+pandas
 matplotlib
 pillow
-twilio
