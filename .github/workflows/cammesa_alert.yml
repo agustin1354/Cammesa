@@ -3,7 +3,7 @@ name: Cammesa Alerta Automática
 on:
   schedule:
     - cron: "*/5 * * * *"  # Cada 5 minutos
-  workflow_dispatch:        # Ejecutar manualmente
+  workflow_dispatch:        # Ejecutar manualmente desde GitHub UI
 
 jobs:
   cammesa-alert:
@@ -23,44 +23,36 @@ jobs:
           pip install --upgrade pip
           pip install requests pandas schedule
 
-      - name: Run script
+      - name: Run script and generate CSV
         env:
           EMAIL_ALERT_TO: ${{ secrets.EMAIL_ALERT_TO }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          
-      - name: Run script and generate CSV
         run: |
-          # Ejecutar el script principal
+          # 1. Ejecutar main.py para generar CAMMESA.csv
           python main.py
 
-          # Verificar si se generó el archivo
+          # 2. Verificar si se generó el archivo CSV
           if [ -f "CAMMESA.csv" ]; then
             echo "✅ Archivo CAMMESA.csv encontrado"
             cat CAMMESA.csv
           else
-            echo "❌ No se encontró CAMMESA.csv"
+            echo "❌ Archivo CAMMESA.csv NO generado"
+            touch CAMMESA.csv
           fi
 
-      - name: Commit changes
+      - name: Commit changes to GitHub
         run: |
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          # Solo agregar si existe
-          if [ -f "CAMMESA.csv" ]; then
-            git add CAMMESA.csv
-          else
-            echo "📎 No hay archivo CSV para guardar"
-            exit 0
-          fi
-
-          # Comprobar si hay cambios reales
-          git diff --cached --quiet
+          # Solo agregar si hay cambios reales
+          git diff --quiet && git diff --cached --quiet
           if [ $? -eq 1 ]; then
+            git add CAMMESA.csv
             git commit -m "Actualizar CAMMESA.csv"
             git push origin main
             echo "✅ Archivo actualizado en GitHub"
           else
-            echo "📎 Sin cambios → no se hizo commit"
+            echo "📎 No hubo cambios → no se hizo commit"
           fi
