@@ -48,32 +48,32 @@ def job():
            
 
             try:
-    send_email(subject_email, mensaje_email)
-    log_alert(
-        filepath="Alertas CAMMESA.csv",
-        region_id=region_id,
-        region_name=region_name,
-        hoy=current,
-        ayer=yesterday,
-        semana_anterior=last_week,
-        porcentaje_ayer=((yesterday - current) / yesterday * 100),
-        porcentaje_semana=((last_week - current) / last_week * 100),
-        medio="email",
-        estado="exitoso"
-    )
-except Exception as e:
-    log_alert(
-        filepath="Alertas CAMMESA.csv",
-        region_id=region_id,
-        region_name=region_name,
-        hoy=current,
-        ayer=yesterday,
-        semana_anterior=last_week,
-        porcentaje_ayer=((yesterday - current) / yesterday * 100),
-        porcentaje_semana=((last_week - current) / last_week * 100),
-        medio="email",
-        estado=f"fallido: {str(e)}"
-    )
+                send_email(subject_email, mensaje_email)
+                log_alert(
+                filepath="Alertas CAMMESA.csv",
+                region_id=region_id,
+                region_name=region_name,
+                hoy=current,
+                ayer=yesterday,
+                semana_anterior=last_week,
+                porcentaje_ayer=((yesterday - current) / yesterday * 100),
+                porcentaje_semana=((last_week - current) / last_week * 100),
+                medio="email",
+                estado="exitoso"
+                )
+            except Exception as e:
+                log_alert(
+                filepath="Alertas CAMMESA.csv",
+                region_id=region_id,
+                region_name=region_name,
+                hoy=current,
+                ayer=yesterday,
+                semana_anterior=last_week,
+                porcentaje_ayer=((yesterday - current) / yesterday * 100),
+                porcentaje_semana=((last_week - current) / last_week * 100),
+                medio="email",
+                estado=f"fallido: {str(e)}"
+                )
 
             # Enviar por WhatsApp
             try:
@@ -87,7 +87,6 @@ except Exception as e:
                 print(f"[{region_id}] ℹ️  Diferencias encontradas:")
                 for r in reasons:
                     print(f"[{region_id}]    - {r}")
-
 
 if __name__ == "__main__":
     job()  # Ejecutar una sola vez
