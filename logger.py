@@ -4,7 +4,7 @@ import csv
 from datetime import datetime
 import os
 
-def log_alert(filepath="C:\Users\difilippoa\OneDrive - Telefonica\Seguimiento Contratistas - Gestiones Proveedores de Energía\Alertas CAMMESA.csv", **kwargs):
+def log_alert(filepath=r"C:\Users\difilippoa\OneDrive - Telefonica\Seguimiento Contratistas - Gestiones Proveedores de Energía\Alertas CAMMESA.csv", **kwargs):
     timestamp = kwargs.get("timestamp", datetime.now().isoformat())
     region_id = kwargs.get("region_id", "")
     region_name = kwargs.get("region_name", "")
