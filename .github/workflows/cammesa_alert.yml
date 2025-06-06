@@ -46,20 +46,25 @@ jobs:
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          # Verificar si el archivo existe y tiene contenido
+          # Verificar si existe el archivo CAMMESA.csv y tiene contenido
           if [ -f "CAMMESA.csv" ]; then
             size=$(stat -c%s CAMMESA.csv 2>/dev/null || echo 0)
 
             if [ "$size" -gt 0 ]; then
               git add CAMMESA.csv
 
-              # Hacer commit incluso si parece que no hay cambios
-              git commit -m "Actualizar CAMMESA.csv" || echo "⚠️  Sin cambios detectados (opcional)"
-              git push origin main
-              echo "✅ Archivo actualizado en GitHub"
+              # Solo hacer commit si hay cambios reales
+              git diff --staged --quiet
+              if [ $? -eq 1 ]; then
+                git commit -m "feat(data): actualizar CAMMESA.csv"
+                git push origin main
+                echo "✅ Archivo actualizado en GitHub"
+              else
+                echo "📎 No hubo cambios reales → omitiendo commit"
+              fi
             else
-              echo "📎 Archivo vacío → no se guarda"
+              echo "📎 Archivo CAMMESA.csv está vacío"
             fi
           else
-            echo "❌ Archivo CAMMESA.csv no generado"
+            echo "❌ CAMMESA.csv no encontrado"
           fi
