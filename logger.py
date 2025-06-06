@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 
-def init_log_file(filepath="alertas.csv"):
+def init_log_file(filepath="Alertas CAMMESA.csv"):
     if not os.path.exists(filepath):
         with open(filepath, "w", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
@@ -24,7 +24,7 @@ def init_log_file(filepath="alertas.csv"):
         print(f"ℹ️  Archivo {filepath} ya existe")
 
 
-def log_alert(filepath="alertas.csv", **kwargs):
+def log_alert(filepath="Alertas CAMMESA.csv", **kwargs):
     timestamp = kwargs.get("timestamp", datetime.now().isoformat())
     region_id = kwargs.get("region_id", "")
     region_name = kwargs.get("region_name", "")
