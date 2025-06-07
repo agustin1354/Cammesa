@@ -49,14 +49,14 @@ jobs:
               git diff --staged --quiet
               if [ $? -eq 1 ]; then
                 git commit -m "Actualizar CAMMESA.csv"
-                git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-                git push origin main
-                echo "✅ Archivo actualizado en GitHub"
-              else
-                echo "📎 No hubo cambios reales → omitiendo commit"
               fi
+
+              # Actualizar repo solo si hay cambios reales
+              git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+              git push origin main
+              echo "✅ Archivo actualizado en GitHub"
             else
-              echo "📎 Archivo vacío → no se guarda"
+              echo "📎 Archivo vacío → no se hace push"
             fi
           else
             echo "❌ Archivo CAMMESA.csv no encontrado"
