@@ -3,7 +3,7 @@ name: Cammesa Alerta Automática
 on:
   schedule:
     - cron: "*/5 * * * *"  # Cada 5 minutos
-  workflow_dispatch:       # Ejecutar manualmente
+  workflow_dispatch:
 
 jobs:
   cammesa-alert:
@@ -37,7 +37,7 @@ jobs:
           python main.py
 
           if [ -f "CAMMESA.csv" ]; then
-            echo "✅ Archivo CAMMESA.csv generado o actualizado"
+            echo "✅ Archivo CAMMESA.csv generado"
             cat CAMMESA.csv
           else
             echo "❌ Archivo CAMMESA.csv NO generado"
@@ -49,14 +49,20 @@ jobs:
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          # Solo agregar si hay contenido nuevo
-          git diff --quiet && git diff --cached --quiet
+          # Agregar siempre el archivo
+          git add CAMMESA.csv
+
+          # Hacer commit incluso si no hay cambios visibles
+          git diff --staged --quiet
           if [ $? -eq 1 ]; then
-            git add CAMMESA.csv
             git commit -m "Actualizar CAMMESA.csv"
-            git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-            git push origin main
-            echo "✅ Archivo actualizado en GitHub"
           else
-            echo "📎 No hubo cambios → no se hizo commit"
+            git commit -m "Actualizar CAMMESA.csv (sin cambios visuales)"
           fi
+
+          # Configurar remote con token
+          git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+          # Hacer push solo si hay conexión
+          git push origin main
+          echo "✅ Archivo actualizado en GitHub"
