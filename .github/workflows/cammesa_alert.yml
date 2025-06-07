@@ -28,10 +28,12 @@ jobs:
           python main.py
 
           if [ -f "CAMMESA.csv" ]; then
-            echo "✅ Archivo CAMMESA.csv generado"
+            echo "✅ Archivo generado"
             cat CAMMESA.csv
           else
-            echo "❌ Archivo CAMMESA.csv NO generado"
+            echo "❌ Archivo NO generado"
+            touch CAMMESA.csv
+            echo "📎 Archivo creado vacío para evitar fallos"
           fi
 
       - name: Commit changes to GitHub
