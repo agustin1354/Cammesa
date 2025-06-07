@@ -13,6 +13,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Pull latest changes
+        run: |
+          git pull origin main || echo "⚠️ No hubo cambios previos"
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -21,20 +25,23 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install requests schedule pandas
+          pip install requests pandas schedule
 
       - name: Run script and generate CSV
+        env:
+          EMAIL_ALERT_TO: ${{ secrets.EMAIL_ALERT_TO }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: |
           echo "🔄 Ejecutando script principal..."
           python main.py
 
           if [ -f "CAMMESA.csv" ]; then
-            echo "✅ Archivo CAMMESA.csv generado"
+            echo "✅ Archivo CAMMESA.csv generado o actualizado"
             cat CAMMESA.csv
           else
             echo "❌ Archivo CAMMESA.csv NO generado"
             touch CAMMESA.csv
-            echo "📎 Archivo vacío creado temporalmente"
           fi
 
       - name: Commit changes to GitHub
@@ -42,22 +49,14 @@ jobs:
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          if [ -f "CAMMESA.csv" ]; then
-            size=$(stat -c%s CAMMESA.csv 2>/dev/null || echo 0)
-            if [ "$size" -gt 0 ]; then
-              git add CAMMESA.csv
-
-              git diff --staged --quiet
-              if [ $? -eq 1 ]; then
-                git commit -m "Actualizar CAMMESA.csv"
-              fi
-
-              git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-              git push origin main
-              echo "✅ Archivo actualizado en GitHub"
-            else
-              echo "📎 Archivo vacío → no se guarda"
-            fi
+          # Solo agregar si hay contenido nuevo
+          git diff --quiet && git diff --cached --quiet
+          if [ $? -eq 1 ]; then
+            git add CAMMESA.csv
+            git commit -m "Actualizar CAMMESA.csv"
+            git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            git push origin main
+            echo "✅ Archivo actualizado en GitHub"
           else
-            echo "❌ No se encontró CAMMESA.csv"
+            echo "📎 No hubo cambios → no se hizo commit"
           fi
