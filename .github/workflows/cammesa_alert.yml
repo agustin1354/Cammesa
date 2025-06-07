@@ -25,7 +25,7 @@ jobs:
 
       - name: Run script and generate CSV
         run: |
-          echo "🔄 Ejecutando main.py..."
+          echo "🔄 Ejecutando script principal..."
           python main.py
 
           if [ -f "CAMMESA.csv" ]; then
@@ -34,7 +34,7 @@ jobs:
           else
             echo "❌ Archivo CAMMESA.csv NO generado"
             touch CAMMESA.csv
-            echo "📎 Archivo creado vacío para evitar fallos"
+            echo "📎 Archivo vacío creado temporalmente"
           fi
 
       - name: Commit changes to GitHub
@@ -42,29 +42,22 @@ jobs:
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          # Verificar si existe el archivo CAMMESA.csv
           if [ -f "CAMMESA.csv" ]; then
             size=$(stat -c%s CAMMESA.csv 2>/dev/null || echo 0)
             if [ "$size" -gt 0 ]; then
               git add CAMMESA.csv
 
-              # Hacer commit solo si hay cambios reales
               git diff --staged --quiet
               if [ $? -eq 1 ]; then
                 git commit -m "Actualizar CAMMESA.csv"
-                
-                # Configurar URL remota con token
-                git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-                
-                # Hacer push solo si hubo cambios
-                git push origin main
-                echo "✅ Archivo actualizado en GitHub"
-              else
-                echo "📎 No hubo cambios reales → omitiendo commit"
               fi
+
+              git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+              git push origin main
+              echo "✅ Archivo actualizado en GitHub"
             else
               echo "📎 Archivo vacío → no se guarda"
             fi
           else
-            echo "❌ Archivo CAMMESA.csv no encontrado"
+            echo "❌ No se encontró CAMMESA.csv"
           fi
