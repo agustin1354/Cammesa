@@ -77,10 +77,31 @@ def job():
                 print(f"[{region_id}] ℹ️  Diferencias encontradas:")
                 for r in reasons:
                     print(f"[{region_id}]    - {r}")
+                    
+def test_write():
+    """
+    Prueba escribir en la ruta del CSV incluso sin alerta
+    """
+    from logger import log_alert
+    from config import CSV_FILE_PATH
 
-if __name__ == "__main__":
+    print(f"🧪 Modo prueba: intentando guardar en {CSV_FILE_PATH}")
+
     try:
-        job()
+        # Datos simulados
+        log_alert(
+            filepath=CSV_FILE_PATH,
+            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            region_id=1002,
+            region_name="Total SADI",
+            hoy=14000,
+            ayer=18000,
+            semana_anterior=17500
+        )
+        print("✅ Prueba de escritura exitosa")
     except Exception as e:
-        print("❌ Error crítico:", e)
-        raise
+        print(f"❌ Error en prueba de escritura: {e}") 
+        
+if __name__ == "__main__":
+    test_write()  # Prueba de escritura
+    # job()       # Descomenta cuando sepas que funciona
