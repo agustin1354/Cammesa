@@ -103,5 +103,5 @@ def test_write():
         print(f"❌ Error en prueba de escritura: {e}") 
         
 if __name__ == "__main__":
-    test_write()  # Prueba de escritura
-    # job()       # Descomenta cuando sepas que funciona
+    #test_write()  # Prueba de escritura
+     job()       # Descomenta cuando sepas que funciona
