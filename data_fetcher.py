@@ -31,21 +31,24 @@ def get_demand_comparison_values(region_id):
             }
 
         data = response.json()
+
         latest_record = None
         latest_datetime = None
 
-        # Caso 1: La API devuelve una lista de registros 
+        # Caso 1: La API devuelve una lista de mediciones 
         if isinstance(data, list):
             for record in data:
                 fecha_str = record.get("fecha")
                 if not fecha_str:
                     continue
+
+                # Parsear fecha
                 try:
                     fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%dT%H:%M:%S.%f%z")
                 except ValueError:
                     try:
                         fecha_dt = datetime.strptime(fecha_str.split(".")[0], "%Y-%m-%dT%H:%M:%S")
-                    except Exception as ve:
+                    except ValueError as ve:
                         print(f"[Región {region_id}] ❌ Error al parsear fecha:", ve)
                         continue
 
@@ -53,14 +56,16 @@ def get_demand_comparison_values(region_id):
                     record.get("Demanda") or
                     record.get("demHoy") or
                     record.get("valor") or
-                    None
+                    record.get("demand", None)
                 )
+
                 yesterday = (
                     record.get("DemandaAyer") or
                     record.get("demAyer") or
                     record.get("valorAyer") or
                     None
                 )
+
                 last_week = (
                     record.get("DemandaSemanaAnterior") or
                     record.get("demSemanaAnt") or
@@ -69,10 +74,11 @@ def get_demand_comparison_values(region_id):
                 )
 
                 if current is not None and yesterday is not None and last_week is not None:
-                    latest_record = record
-                    latest_datetime = fecha_dt
-                    break
+                    if latest_datetime is None or fecha_dt > latest_datetime:
+                        latest_datetime = fecha_dt
+                        latest_record = record
 
+        # Caso 2: La API devuelve un único dict
         elif isinstance(data, dict):
             latest_record = data
             fecha_str = data.get("fecha")
@@ -87,15 +93,22 @@ def get_demand_comparison_values(region_id):
             yesterday = float(latest_record.get("DemandaAyer", 0) or latest_record.get("demAyer", 0) or latest_record.get("valorAyer", 0))
             last_week = float(latest_record.get("DemandaSemanaAnterior", 0) or latest_record.get("demSemanaAnt", 0) or latest_record.get("valorSemanaAnterior", 0))
 
-            # Obtener historial completo para comparar con medición inmediata anterior
-            history = data if isinstance(data, list) else []
+            # Solo devolver valores si todos son válidos
+            if current <= 0:
+                current = None
+            if yesterday <= 0:
+                yesterday = None
+            if last_week <= 0:
+                last_week = None
+
+            timestamp = latest_datetime.strftime("%Y-%m-%d %H:%M:%S") if latest_datetime else None
 
             return {
                 "current": current,
-                "ayer": yesterday,
-                "semana_anterior": last_week,
-                "timestamp": latest_datetime.strftime("%Y-%m-%d %H:%M:%S"),
-                "history": history
+                "yesterday": yesterday,
+                "last_week": last_week,
+                "timestamp": timestamp,
+                "history": data if isinstance(data, list) else []
             }
 
         else:
