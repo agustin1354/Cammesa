@@ -1,7 +1,5 @@
 # config.py
 
-#THRESHOLD_PERCENTAGE = 20  # % de caída para disparar alerta
-
 # Datos extraídos del JSON proporcionado
 RAW_REGION_DATA = [
     {"idElemento": 540022, "nombre": "Misiones", "idPadre": 535042, "id": 2426},
@@ -52,7 +50,9 @@ REGIONS = {
 
 import os
 
-THRESHOLD_PERCENTAGE = float(os.getenv("THRESHOLD_PERCENTAGE", "20"))
+THRESHOLD_DAILY = 20     # % caída mínima para disparar alerta vs Ayer y Semana pasada
+THRESHOLD_LAST_MEASUREMENT = 10  # % caída mínima vs medición inmediata anterior
+THRESHOLD_DAILY = float(os.getenv("THRESHOLD_PERCENTAGE", "20"))
 
 EMAIL_ALERT_TO = os.getenv("EMAIL_ALERT_TO")
 EMAIL_FROM = os.getenv("EMAIL_FROM")
