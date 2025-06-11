@@ -3,6 +3,19 @@
 import requests
 from datetime import datetime
 
+def parse_fecha(fecha_str):
+    """Parsea fechas con o sin milisegundos o zona horaria"""
+    if not fecha_str:
+        return None
+    try:
+        return datetime.strptime(fecha_str, "%Y-%m-%dT%H:%M:%S.%f%z")
+    except ValueError:
+        try:
+            return datetime.strptime(fecha_str.split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        except ValueError as ve:
+            print("❌ Error al parsear fecha:", ve)
+            return None
+
 
 def get_demand_comparison_values(region_id):
     """
@@ -21,7 +34,7 @@ def get_demand_comparison_values(region_id):
         response = requests.get(API_URL)
 
         if response.status_code != 200:
-            print(f"[Región {region_id}] ❌ Error en la solicitud HTTP")
+            print(f"[Región {region_id}] ❌ Error en la solicitud HTTP: {response.status_code}")
             return {
                 "current": None,
                 "yesterday": None,
@@ -35,84 +48,50 @@ def get_demand_comparison_values(region_id):
         latest_record = None
         latest_datetime = None
 
-        # Caso 1: La API devuelve una lista de mediciones 
+        # Caso 1: La API devuelve una lista de registros 
         if isinstance(data, list):
             for record in data:
                 fecha_str = record.get("fecha")
-                if not fecha_str:
+                fecha_dt = parse_fecha(fecha_str)
+
+                current = float(record.get("demHoy", 0) or record.get("Demanda", 0))
+                yesterday = float(record.get("demAyer", 0) or record.get("DemandaAyer", 0))
+                last_week = float(record.get("demSemanaAnt", 0) or record.get("DemandaSemanaAnterior", 0))
+
+                if current <= 0 or yesterday <= 0 or last_week <= 0:
                     continue
 
-                # Parsear fecha
-                try:
-                    fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%dT%H:%M:%S.%f%z")
-                except ValueError:
-                    try:
-                        fecha_dt = datetime.strptime(fecha_str.split(".")[0], "%Y-%m-%dT%H:%M:%S")
-                    except ValueError as ve:
-                        print(f"[Región {region_id}] ❌ Error al parsear fecha:", ve)
-                        continue
-
-                current = (
-                    record.get("Demanda") or
-                    record.get("demHoy") or
-                    record.get("valor") or
-                    record.get("demand", None)
-                )
-
-                yesterday = (
-                    record.get("DemandaAyer") or
-                    record.get("demAyer") or
-                    record.get("valorAyer") or
-                    None
-                )
-
-                last_week = (
-                    record.get("DemandaSemanaAnterior") or
-                    record.get("demSemanaAnt") or
-                    record.get("valorSemanaAnterior") or
-                    None
-                )
-
-                if current is not None and yesterday is not None and last_week is not None:
-                    if latest_datetime is None or fecha_dt > latest_datetime:
-                        latest_datetime = fecha_dt
-                        latest_record = record
+                if fecha_dt and (latest_datetime is None or fecha_dt > latest_datetime):
+                    latest_datetime = fecha_dt
+                    latest_record = {
+                        "current": current,
+                        "yesterday": yesterday,
+                        "last_week": last_week,
+                        "timestamp": latest_datetime.strftime("%Y-%m-%d %H:%M:%S") if latest_datetime else None,
+                        "history": data  # Lista completa para análisis posterior
+                    }
 
         # Caso 2: La API devuelve un único dict
         elif isinstance(data, dict):
-            latest_record = data
             fecha_str = data.get("fecha")
-            if fecha_str:
-                try:
-                    latest_datetime = datetime.strptime(fecha_str, "%Y-%m-%dT%H:%M:%S.%f%z")
-                except ValueError:
-                    latest_datetime = datetime.strptime(fecha_str.split(".")[0], "%Y-%m-%dT%H:%M:%S")
+            fecha_dt = parse_fecha(fecha_str)
 
-        if latest_record:
-            current = float(latest_record.get("Demanda", 0) or latest_record.get("demHoy", 0) or latest_record.get("valor", 0))
-            yesterday = float(latest_record.get("DemandaAyer", 0) or latest_record.get("demAyer", 0) or latest_record.get("valorAyer", 0))
-            last_week = float(latest_record.get("DemandaSemanaAnterior", 0) or latest_record.get("demSemanaAnt", 0) or latest_record.get("valorSemanaAnterior", 0))
+            current = float(data.get("demHoy", 0) or data.get("Demanda", 0))
+            yesterday = float(data.get("demAyer", 0) or data.get("DemandaAyer", 0))
+            last_week = float(data.get("demSemanaAnt", 0) or data.get("DemandaSemanaAnterior", 0))
 
-            # Solo devolver valores si todos son válidos
-            if current <= 0:
-                current = None
-            if yesterday <= 0:
-                yesterday = None
-            if last_week <= 0:
-                last_week = None
-
-            timestamp = latest_datetime.strftime("%Y-%m-%d %H:%M:%S") if latest_datetime else None
-
-            return {
+            latest_record = {
                 "current": current,
                 "yesterday": yesterday,
                 "last_week": last_week,
-                "timestamp": timestamp,
-                "history": data if isinstance(data, list) else []
+                "timestamp": fecha_dt.strftime("%Y-%m-%d %H:%M:%S") if fecha_dt else None,
+                "history": [data]  # Guardamos el histórico como lista
             }
 
+        if latest_record:
+            return latest_record
         else:
-            print(f"[Región {region_id}] ❌ No se encontró un registro válido")
+            print(f"[Región {region_id}] ❌ No se encontró registro válido")
             return {
                 "current": None,
                 "yesterday": None,
