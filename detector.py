@@ -3,9 +3,7 @@
 
 def check_peak(current, yesterday, last_week, history, threshold_daily=20, threshold_last_measurement=10):
     
-    print("DEBUG - current:", current)
-    print("DEBUG - previous_measurement:", previous_measurement)
-    print("DEBUG - diff_previous:", diff_previous)
+
     """
     Devuelve (bool, list) → si hay alerta y causas
     """
@@ -28,6 +26,10 @@ def check_peak(current, yesterday, last_week, history, threshold_daily=20, thres
     if len(history) >= 2:
         record = history[1]
         previous_measurement = float(record.get("demHoy", 0))
+        
+        print("DEBUG - current:", current)
+        print("DEBUG - previous_measurement:", previous_measurement)
+        print("DEBUG - diff_previous:", diff_previous)
 
         if previous_measurement > 0:
             diff_previous = ((previous_measurement - current) / previous_measurement * 100)
