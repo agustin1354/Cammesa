@@ -51,58 +51,12 @@ def job():
             )
             subject_email = f"⚠️ Alerta - Caída en Demanda [{region_name}] ({THRESHOLD_PERCENTAGE}% o más)"
             send_email(subject_email, mensaje_email)
-            
-            '''
-            log_alert(
-            filepath=CSV_FILE_PATH,
-            timestamp=timestamp,
-            region_id=region_id,
-            region_name=region_name,
-            hoy=current,
-            ayer=yesterday,
-            semana_anterior=last_week,
-            porcentaje_ayer=((yesterday - current) / yesterday * 100),
-            porcentaje_semana=((last_week - current) / last_week * 100)
-            )
-                    
-            
-            # Enviar por WhatsApp
-            try:
-                send_whatsapp_alert(region_name, current, yesterday, last_week, timestamp)
-            except Exception as e:
-                print(f"[{region_id}] ❌ Error al enviar por WhatsApp: {e}")
-            '''
         else:
             print(f"[{region_id}] ✅ No se detectaron picos.")
             if len(reasons) > 0:
                 print(f"[{region_id}] ℹ️  Diferencias encontradas:")
                 for r in reasons:
                     print(f"[{region_id}]    - {r}")
-          '''              
-def test_write():
-    """
-    Prueba escribir en la ruta del CSV incluso sin alerta
-    """
-    from logger import log_alert
-    from config import CSV_FILE_PATH
-
-    print(f"🧪 Modo prueba: intentando guardar en {CSV_FILE_PATH}")
-
-    try:
-        # Datos simulados
-        log_alert(
-            filepath=CSV_FILE_PATH,
-            timestamp=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            region_id=1002,
-            region_name="Total SADI",
-            hoy=14000,
-            ayer=18000,
-            semana_anterior=17500
-        )
-        print("✅ Prueba de escritura exitosa")
-    except Exception as e:
-        print(f"❌ Error en prueba de escritura: {e}") 
-        '''
 
 if __name__ == "__main__":
     #test_write()  # Prueba de escritura
