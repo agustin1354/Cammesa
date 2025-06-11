@@ -52,6 +52,7 @@ def job():
             subject_email = f"⚠️ Alerta - Caída en Demanda [{region_name}] ({THRESHOLD_PERCENTAGE}% o más)"
             send_email(subject_email, mensaje_email)
             
+            '''
             log_alert(
             filepath=CSV_FILE_PATH,
             timestamp=timestamp,
@@ -64,7 +65,7 @@ def job():
             porcentaje_semana=((last_week - current) / last_week * 100)
             )
                     
-            '''
+            
             # Enviar por WhatsApp
             try:
                 send_whatsapp_alert(region_name, current, yesterday, last_week, timestamp)
@@ -77,7 +78,7 @@ def job():
                 print(f"[{region_id}] ℹ️  Diferencias encontradas:")
                 for r in reasons:
                     print(f"[{region_id}]    - {r}")
-                    
+      '''              
 def test_write():
     """
     Prueba escribir en la ruta del CSV incluso sin alerta
@@ -101,7 +102,8 @@ def test_write():
         print("✅ Prueba de escritura exitosa")
     except Exception as e:
         print(f"❌ Error en prueba de escritura: {e}") 
-        
+        '''
+
 if __name__ == "__main__":
     #test_write()  # Prueba de escritura
      job()       # Descomenta cuando sepas que funciona
