@@ -78,7 +78,7 @@ def job():
                 print(f"[{region_id}] ℹ️  Diferencias encontradas:")
                 for r in reasons:
                     print(f"[{region_id}]    - {r}")
-      '''              
+          '''              
 def test_write():
     """
     Prueba escribir en la ruta del CSV incluso sin alerta
