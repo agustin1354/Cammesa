@@ -27,12 +27,15 @@ def check_peak(current, yesterday, last_week, history, threshold_daily=20, thres
         record = history[1]
         previous_measurement = float(record.get("demHoy", 0))
         
-        print("DEBUG - current:", current)
-        print("DEBUG - previous_measurement:", previous_measurement)
-        print("DEBUG - diff_previous:", diff_previous)
+
 
         if previous_measurement > 0:
             diff_previous = ((previous_measurement - current) / previous_measurement * 100)
+            
+            print("DEBUG - current:", current)
+            print("DEBUG - previous_measurement:", previous_measurement)
+            print("DEBUG - diff_previous:", diff_previous)
+            
             if diff_previous >= threshold_last_measurement:
                 reasons.append(f"Hoy ({current:.1f} MW) es {diff_previous:.1f}% menor que la medición inmediata anterior ({previous_measurement:.1f} MW)")
                 condition_2 = True
