@@ -1,5 +1,9 @@
 # detector.py
 
+print("DEBUG - current:", current)
+print("DEBUG - previous_measurement:", previous_measurement)
+print("DEBUG - diff_previous:", diff_previous)
+
 def check_peak(current, yesterday, last_week, history, threshold_daily=20, threshold_last_measurement=10):
     """
     Devuelve (bool, list) → si hay alerta y causas
