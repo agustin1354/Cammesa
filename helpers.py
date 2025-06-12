@@ -1,6 +1,6 @@
 # helpers.py
 
-def generate_alert_html(region_name, region_id, timestamp, current, yesterday, last_week, history, , reasons,a_threshold, b_threshold):
+def generate_alert_html(region_name, region_id, timestamp, current, yesterday, last_week, history, reasons,a_threshold, b_threshold):
     """
     Genera cuerpo HTML del correo según datos de alerta
     """
