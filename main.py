@@ -79,7 +79,7 @@ def job():
                         reasons=reasons
                     )
                     subject_email = f"⚠️ [ALERTA] Caída significativa – {region_name}"
-                    send_email_alert(subject_email, mensaje_html)
+                    send_email(subject_email, mensaje_html)
                     
                 else:
                     print(f"[{region_id}] ✅ No se detectaron picos")
