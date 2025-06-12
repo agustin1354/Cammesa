@@ -16,8 +16,8 @@ def generate_alert_html(region_name, region_id, timestamp, current, yesterday, l
 
         <h2 style="color:#3F51B5;">📌 Configuración actual de alertas:</h2>
         <ul>
-            <li><strong>A)</strong> Hoy es ≥<strong>{reasons.A_THRESHOLD}%</strong> menor que Ayer y Semana pasada</li>
-            <li><strong>B)</strong> Hoy es ≥<strong>{reasons.B_THRESHOLD}%</strong> menor que la medición inmediata anterior</li>
+            <li><strong>A)</strong> Demanda actual es <strong>{reasons.A_THRESHOLD}%</strong> menor que la de Ayer y la Semana pasada (Se deben cumplir ambas)</li>
+            <li><strong>B)</strong> Demanda actual es ≥<strong>{reasons.B_THRESHOLD}%</strong> menor que la medición inmediata anterior</li>
         </ul>
 
         <h2 style="color:#3F51B5;">📍 Región: {region_name} (ID: {region_id})</h2>
