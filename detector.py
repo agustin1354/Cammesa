@@ -2,8 +2,6 @@
 
 
 def check_peak(current, yesterday, last_week, history, threshold_daily=20, threshold_last_measurement=10):
-    
-
     """
     Devuelve (bool, list) → si hay alerta y causas
     """
@@ -24,11 +22,10 @@ def check_peak(current, yesterday, last_week, history, threshold_daily=20, thres
     previous_measurement = None
 
     if len(history) >= 2:
-        record = history[1]
+        # ✅ Toma la penúltima medición como "medición inmediata anterior"
+        record = history[-2]
         previous_measurement = float(record.get("demHoy", 0))
         
-
-
         if previous_measurement > 0:
             diff_previous = ((previous_measurement - current) / previous_measurement * 100)
             
