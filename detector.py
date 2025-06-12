@@ -21,6 +21,14 @@ def check_peak(current, yesterday, last_week, history, threshold_daily=20, thres
     condition_2 = False
     previous_measurement = None
 
+    #Prueba DEBUG
+    record = history[-2]
+    previous_measurement = float(record.get("demHoy", 0))
+    diff_previous = ((previous_measurement - current) / previous_measurement * 100)
+    print("DEBUG - current:", current)
+    print("DEBUG - previous_measurement:", previous_measurement)
+    print("DEBUG - diff_previous:", diff_previous)
+
     if len(history) >= 2:
         # ✅ Toma la penúltima medición como "medición inmediata anterior"
         record = history[-2]
