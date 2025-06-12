@@ -78,7 +78,7 @@ def job():
                         history=history,
                         reasons=reasons
                     )
-                    subject_email = f"⚠️ [ALERTA] Caída significativa – {region_name}"
+                    subject_email = f"⚠️ [ALERTA] Caída significativa de la demanda en – {region_name}"
                     send_email(subject_email, mensaje_html)
                     
                 else:
