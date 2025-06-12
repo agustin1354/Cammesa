@@ -49,25 +49,6 @@ def job():
 
                 if is_peak:
                     
-                    ''' VERSION MENSAJE VIEJO
-                    mensaje_email = (
-                        f"🚨 ¡Alerta CAMMESA!\n\n"
-                        f"Región: {region_name} (ID: {region_id})\n"
-                        f"Hora: {timestamp}\n"
-                        f"Valores:\n"
-                        f"Hoy: {current:.1f} MW\n"
-                        f"Ayer: {yesterday:.1f} MW\n"
-                        f"Semana pasada: {last_week:.1f} MW\n"
-                        f"Causas:\n" + "\n".join(reasons)
-                    )
-                    subject_email = f"⚠️ [ALERTA] Caída en Demanda [{region_name}]"
-                    send_email(subject_email, mensaje_email)
-                    '''
-
-                    # Agregar umbrales actuales a las razones (opcional)
-                    reasons.A_THRESHOLD = THRESHOLD_DAILY
-                    reasons.B_THRESHOLD = THRESHOLD_LAST_MEASUREMENT
-        
                     mensaje_html = generate_alert_html(
                         region_name=region_name,
                         region_id=region_id,
@@ -76,7 +57,9 @@ def job():
                         yesterday=yesterday,
                         last_week=last_week,
                         history=history,
-                        reasons=reasons
+                        reasons=reasons,
+                        a_threshold=THRESHOLD_DAILY,         # ✅ Pasamos los umbrales aquí
+                        b_threshold=THRESHOLD_LAST_MEASUREMENT
                     )
                     subject_email = f"⚠️ [ALERTA CAMMESA] Caída significativa de la demanda en – {region_name}"
                     send_email(subject_email, mensaje_html)
