@@ -176,5 +176,4 @@ if __name__ == "__main__":
             <p style="font-style: italic; color: #555;">Este aviso fue generado automáticamente según las condiciones definidas.</p>
         </body></html>
         """
-
-    return html
+        return html
