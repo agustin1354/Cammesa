@@ -1,7 +1,7 @@
 # test_alert_email.py
 
 from helpers import generate_alert_html
-from notifier import send_email_alert
+from notifier import send_email
 import json
 from datetime import datetime
 
@@ -50,6 +50,6 @@ mensaje_html = generate_alert_html(
 
 subject = "⚠️ [PRUEBA] Alerta CAMMESA – Caída en Demanda"
 
-send_email_alert(subject, mensaje_html)
+send_email(subject, mensaje_html)
 
 print("✅ Correo de prueba generado y enviado")
