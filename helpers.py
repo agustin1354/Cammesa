@@ -45,12 +45,12 @@ def generate_alert_html(region_name, region_id, timestamp, current, yesterday, l
                 <tr style="text-align: center;">
                     <td style="border: 1px solid #ccc; padding: 6px;">Ayer</td>
                     <td style="border: 1px solid #ccc; padding: 6px;">{yesterday:.1f} MW</td>
-                    <td style="border: 1px solid #ccc; padding: 6px;">última medición</td>
+                    <td style="border: 1px solid #ccc; padding: 6px;">{timestamp.split()[1]} hs</td>
                 </tr>
                 <tr style="text-align: center;">
                     <td style="border: 1px solid #ccc; padding: 6px;">Semana pasada</td>
                     <td style="border: 1px solid #ccc; padding: 6px;">{last_week:.1f} MW</td>
-                    <td style="border: 1px solid #ccc; padding: 6px;">última medición</td>
+                    <td style="border: 1px solid #ccc; padding: 6px;">{timestamp.split()[1]} hs</td>
                 </tr>
         """
     elif any("medición inmediata" in r for r in reasons) and len(valid_history) >= 2:
@@ -67,7 +67,7 @@ def generate_alert_html(region_name, region_id, timestamp, current, yesterday, l
                 <tr style="text-align: center;">
                     <td style="border: 1px solid #ccc; padding: 6px;">Medición anterior</td>
                     <td style="border: 1px solid #ccc; padding: 6px;">{prev_valor:.1f} MW</td>
-                    <td style="border: 1px solid #ccc; padding: 6px;">{prev_fecha}</td>
+                    <td style="border: 1px solid #ccc; padding: 6px;">{prev_fecha} hs</td>
                 </tr>
         """
     html += """
