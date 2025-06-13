@@ -52,7 +52,7 @@ import os
 
 THRESHOLD_DAILY = 20     # % caída mínima para disparar alerta vs Ayer y Semana pasada
 THRESHOLD_LAST_MEASUREMENT = 10  # % caída mínima vs medición inmediata anterior
-THRESHOLD_DAILY = float(os.getenv("THRESHOLD_PERCENTAGE", "20"))
+# THRESHOLD_DAILY = float(os.getenv("THRESHOLD_PERCENTAGE", "20"))
 SHOW_THRESHOLD_A = THRESHOLD_DAILY
 SHOW_THRESHOLD_B = THRESHOLD_LAST_MEASUREMENT
 
