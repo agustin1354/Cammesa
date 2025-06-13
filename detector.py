@@ -7,18 +7,18 @@ def check_peak(current, yesterday, last_week, history, threshold_daily, threshol
     """
     reasons = []
 
-    # Condición 1: Hoy < Ayer Y Semana pasada (ambos ≥20%)
+    # Condición 1: Hoy < Ayer Y Semana pasada (ambos ≥25%)
     condition_1 = False
     if yesterday > 0 and last_week > 0:
         diff_yesterday = ((yesterday - current) / yesterday * 100)
         diff_last_week = ((last_week - current) / last_week * 100)
 
         if diff_yesterday >= threshold_daily and diff_last_week >= threshold_daily:
-            reasons.append(f"Hoy ({current:.1f} MW) es {diff_yesterday:.1f}% menor que Ayer ({yesterday:.1f} MW)")
-            reasons.append(f"Hoy ({current:.1f} MW) es {diff_last_week:.1f}% menor que Semana pasada ({last_week:.1f} MW)")
+            reasons.append(f"Demanda actual ({current:.1f} MW) es {diff_yesterday:.1f}% menor que la de Ayer en el mismo horario({yesterday:.1f} MW)")
+            reasons.append(f"Demanda actual ({current:.1f} MW) es {diff_last_week:.1f}% menor que la de la Semana pasada en el mismo horario ({last_week:.1f} MW)")
             condition_1 = True
 
-    # Condición 2: Hoy < Medición inmediata anterior (≥10%)
+    # Condición 2: Hoy < Medición inmediata anterior (≥20%)
     condition_2 = False
     previous_measurement = None
 
@@ -40,7 +40,7 @@ def check_peak(current, yesterday, last_week, history, threshold_daily, threshol
 
             if diff_previous >= threshold_last_measurement:
                 reasons.append(
-                    f"Hoy ({current:.1f} MW) es {diff_previous:.1f}% menor que la medición inmediata anterior ({previous_measurement:.1f} MW)"
+                    f"Demanda actual ({current:.1f} MW) es {diff_previous:.1f}% menor que la medición inmediata anterior ({previous_measurement:.1f} MW)"
                 )
                 condition_2 = True
         else:
