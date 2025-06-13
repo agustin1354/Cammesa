@@ -35,7 +35,7 @@ def generate_alert_html(region_name, region_id, timestamp, current, yesterday, l
 """
 
     # Mostrar datos por condición
-    if any("menor que Ayer" in r for r in reasons):
+    if any("menor que la de Ayer" in r for r in reasons):
         html += f"""
                 <tr style="text-align: center;">
                     <td style="border: 1px solid #ccc; padding: 6px;">Hoy</td>
