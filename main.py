@@ -61,7 +61,7 @@ def job():
                         a_threshold=THRESHOLD_DAILY,         # ✅ Pasamos los umbrales aquí
                         b_threshold=THRESHOLD_LAST_MEASUREMENT
                     )
-                    subject_email = f"⚠️ [ALERTA CAMMESA] Caída significativa de la demanda en – {region_name}"
+                    subject_email = f"⚠️ [ALERTA CAMMESA] Caída significativa de la demanda en {region_name}"
                     send_email(subject_email, mensaje_html)
                     
                 else:
