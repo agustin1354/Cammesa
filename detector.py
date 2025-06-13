@@ -14,7 +14,7 @@ def check_peak(current, yesterday, last_week, history, threshold_daily, threshol
         diff_last_week = ((last_week - current) / last_week * 100)
 
         if diff_yesterday >= threshold_daily and diff_last_week >= threshold_daily:
-            reasons.append(f"Demanda actual ({current:.1f} MW) es {diff_yesterday:.1f}% menor que la de Ayer en el mismo horario({yesterday:.1f} MW)")
+            reasons.append(f"Demanda actual ({current:.1f} MW) es {diff_yesterday:.1f}% menor que la de Ayer en el mismo horario ({yesterday:.1f} MW)")
             reasons.append(f"Demanda actual ({current:.1f} MW) es {diff_last_week:.1f}% menor que la de la Semana pasada en el mismo horario ({last_week:.1f} MW)")
             condition_1 = True
 
