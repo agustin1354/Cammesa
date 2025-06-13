@@ -1,6 +1,6 @@
 # detector.py
 
-def check_peak(current, yesterday, last_week, history, threshold_daily=20, threshold_last_measurement=10):
+def check_peak(current, yesterday, last_week, history, threshold_daily, threshold_last_measurement):
     """
     Devuelve (bool, list) → si hay alerta y causas
     Solo considera registros válidos (demHoy > 0)
