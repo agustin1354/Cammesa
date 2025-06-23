@@ -2,7 +2,7 @@
 
 from data_fetcher import get_demand_comparison_values
 from detector import check_peak
-from notifier import send_email_alert
+from notifier import send_email
 from logger import log_alert
 from config import THRESHOLDS, REGIONS, CSV_FILE_PATH
 from utils import get_region_level
@@ -63,7 +63,7 @@ def job():
             subject_email = f"⚠️ [ALERTA] Caída significativa – {region_name}"
 
             try:
-                send_email_alert(subject_email, mensaje_html)
+                send_email(subject_email, mensaje_html)
                 print(f"[{region_id}] ✅ Correo enviado correctamente")
             except Exception as e:
                 print(f"[{region_id}] ❌ Error al enviar correo: {e}")
