@@ -2,12 +2,11 @@
 
 from data_fetcher import get_demand_comparison_values
 from detector import check_peak
-from notifier import send_email
+from notifier import send_email_alert
 from logger import log_alert
-from config import THRESHOLD_DAILY, THRESHOLD_LAST_MEASUREMENT, REGIONS, CSV_FILE_PATH
-from helpers import generate_alert_html
-import time
-import schedule
+from config import THRESHOLDS, REGIONS, CSV_FILE_PATH
+from utils import get_region_level
+from datetime import datetime
 
 
 def job():
@@ -16,7 +15,6 @@ def job():
     for region_id, region_name in REGIONS.items():
         print(f"\n📶 Revisando región: {region_name} (ID: {region_id})...")
 
-        # Obtener datos de la API
         values = get_demand_comparison_values(region_id)
 
         current = values.get("current")
@@ -25,55 +23,53 @@ def job():
         timestamp = values.get("timestamp")
         history = values.get("history", [])
 
-        if current is None:
-            print(f"[{region_id}] ❌ No se pudo obtener la demanda actual.")
+        if current is None or yesterday is None or last_week is None:
+            print(f"[{region_id}] ❌ Datos incompletos → omitiendo alerta")
             continue
 
-        print(f"[{region_id}] 🕒 Hora de medición seleccionada: {timestamp}")
-        print(f"[{region_id}] 📊 Datos obtenidos:")
-        print(f"[{region_id}]   Hoy: {f'{current:.1f} MW' if isinstance(current, (int, float)) else '❌ No disponible'}")
-        print(f"[{region_id}]   Ayer: {f'{yesterday:.1f} MW' if isinstance(yesterday, (int, float)) else '❌ No disponible'}")
-        print(f"[{region_id}]   Semana pasada: {f'{last_week:.1f} MW' if isinstance(last_week, (int, float)) else '❌ No disponible'}")
+        # Obtener el nivel de la región
+        level = get_region_level(region_id, RAW_REGION_DATA)
 
-        # Solo detectar picos si todos los valores son válidos
-        if yesterday is not None and last_week is not None and yesterday > 0 and last_week > 0:
+        # Asignar umbrales según nivel
+        threshold_daily = THRESHOLDS[level]["THRESHOLD_DAILY"]
+        threshold_last_measurement = THRESHOLDS[level]["THRESHOLD_LAST_MEASUREMENT"]
+
+        # Detectar alerta
+        is_peak, reasons = check_peak(
+            current=current,
+            yesterday=yesterday,
+            last_week=last_week,
+            history=history,
+            threshold_daily=threshold_daily,
+            threshold_last_measurement=threshold_last_measurement
+        )
+
+        if is_peak:
+            print(f"[{region_id}] ⚠️ Alerta disparada ({level})")
+
+            mensaje_html = generate_alert_html(
+                region_name=region_name,
+                region_id=region_id,
+                timestamp=timestamp,
+                current=current,
+                yesterday=yesterday,
+                last_week=last_week,
+                history=history,
+                reasons=reasons,
+                a_threshold=threshold_daily,
+                b_threshold=threshold_last_measurement,
+                level=level
+            )
+            subject_email = f"⚠️ [ALERTA] Caída significativa – {region_name}"
+
             try:
-                is_peak, reasons = check_peak(
-                    current=current,
-                    yesterday=yesterday,
-                    last_week=last_week,
-                    history=history,
-                    threshold_daily=THRESHOLD_DAILY,
-                    threshold_last_measurement=THRESHOLD_LAST_MEASUREMENT
-                )
-
-                if is_peak:
-                    
-                    mensaje_html = generate_alert_html(
-                        region_name=region_name,
-                        region_id=region_id,
-                        timestamp=timestamp,
-                        current=current,
-                        yesterday=yesterday,
-                        last_week=last_week,
-                        history=history,
-                        reasons=reasons,
-                        a_threshold=THRESHOLD_DAILY,         # ✅ Pasamos los umbrales aquí
-                        b_threshold=THRESHOLD_LAST_MEASUREMENT
-                    )
-                    subject_email = f"⚠️ [ALERTA CAMMESA] Caída significativa de la demanda en {region_name}"
-                    send_email(subject_email, mensaje_html)
-                    
-                else:
-                    print(f"[{region_id}] ✅ No se detectaron picos")
-                    if len(reasons) > 0:
-                        print(f"[{region_id}] ℹ️ Diferencias menores al umbral:")
-                        for r in reasons:
-                            print(f"[{region_id}]    - {r}")
+                send_email_alert(subject_email, mensaje_html)
+                print(f"[{region_id}] ✅ Correo enviado correctamente")
             except Exception as e:
-                print(f"[{region_id}] ❌ Error al procesar alerta:", e)
+                print(f"[{region_id}] ❌ Error al enviar correo: {e}")
+
         else:
-            print(f"[{region_id}] ⚠️ Datos incompletos o cero → omitiendo detección")
+            print(f"[{region_id}] ✅ No hay alerta")
 
 if __name__ == "__main__":
     job()
