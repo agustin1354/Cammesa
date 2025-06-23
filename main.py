@@ -4,7 +4,7 @@ from data_fetcher import get_demand_comparison_values
 from detector import check_peak
 from notifier import send_email
 from logger import log_alert
-from config import THRESHOLDS, REGIONS, CSV_FILE_PATH
+from config import THRESHOLDS, REGIONS, CSV_FILE_PATH, RAW_REGION_DATA
 from utils import get_region_level
 from datetime import datetime
 
