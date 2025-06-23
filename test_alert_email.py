@@ -1,7 +1,7 @@
 # test_alert_email.py
 
 from helpers import generate_alert_html
-from notifier import send_email_alert
+from notifier import send_email
 from config import THRESHOLDS, RAW_REGION_DATA
 from datetime import datetime
 
@@ -54,7 +54,7 @@ try:
 
     subject = f"⚠️ [PRUEBA] Alerta CAMMESA – {region_name}"
 
-    send_email_alert(subject, mensaje_html)
+    send_email(subject, mensaje_html)
 
     print("✅ Correo de prueba generado y enviado")
 except Exception as e:
