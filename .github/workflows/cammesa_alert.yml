@@ -55,14 +55,19 @@ jobs:
 
           git add mediciones.csv
 
-          # Verificar si hay cambios (con diff)
+          # Verificar si hay cambios reales
           CHANGES=$(git diff --staged --exit-code || true)
 
           if [ -z "$CHANGES" ]; then
-            echo "📎 No hay cambios reales → omitiendo commit"
+            echo "📎 No hubo cambios reales → omitiendo commit"
           else
+            echo "📌 Hubo cambios en mediciones.csv"
+
             git commit -m "Actualizar mediciones.csv"
+            
+            # ✅ URL correcta con GITHUB_TOKEN
             git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            
             git push origin main
             echo "✅ Archivo actualizado en GitHub"
           fi
