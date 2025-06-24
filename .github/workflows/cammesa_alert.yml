@@ -33,33 +33,25 @@ jobs:
           python main.py
 
           if [ -f "mediciones.csv" ]; then
-            echo "✅ Archivo generado"
-            cat mediciones.csv
+            echo "✅ Archivo CSV generado"
+            tail -n 2 mediciones.csv
           else
-            echo "❌ Archivo NO generado"
+            echo "❌ Archivo CSV NO encontrado"
             touch mediciones.csv
           fi
+
+      - name: Add unique line to force git change
+        run: |
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - Registro único" >> mediciones.csv
+          echo "📎 Línea única añadida para forzar diferencia"
 
       - name: Commit changes to GitHub
         run: |
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          # Verificar si existe el archivo y mostrar contenido
-          if [ -f "mediciones.csv" ]; then
-            echo "📄 Archivo encontrado"
-          else
-            echo "🆕 Creando archivo mediciones.csv..."
-            touch mediciones.csv
-          fi
-
-          # Opcional: forzar cambio agregando una línea al final
-          echo "$(date '+%Y-%m-%d %H:%M:%S') - Registro único" >> mediciones.csv
-
-          # Agregar archivo al staging area
           git add mediciones.csv
 
-          # Verificar si hay cambios reales
           git diff --staged --quiet
           if [ $? -eq 1 ]; then
             git commit -m "Actualizar mediciones.csv"
