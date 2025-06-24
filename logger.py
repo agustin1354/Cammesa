@@ -14,9 +14,6 @@ def log_measurement(filepath="mediciones.csv", **kwargs):
     level = kwargs.get("nivel_alerta", "NINGUNA")
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # ✅ Marca única por ejecución
-    porcentaje_ayer = ((yesterday - current) / yesterday * 100) if yesterday and current else 0
-    porcentaje_semana = ((last_week - current) / last_week * 100) if last_week and current else 0
-
     file_exists = os.path.exists(filepath)
 
     with open(filepath, "a", newline="", encoding="utf-8") as f:
@@ -39,12 +36,12 @@ def log_measurement(filepath="mediciones.csv", **kwargs):
             timestamp_medicion,
             region_id,
             region_name,
-            current,
-            yesterday,
-            last_week,
-            f"{porcentaje_ayer:.1f}",
-            f"{porcentaje_semana:.1f}",
+            f"{current:.1f}" if current else "",
+            f"{yesterday:.1f}" if yesterday else "",
+            f"{last_week:.1f}" if last_week else "",
+            f"{((yesterday - current) / yesterday * 100):.1f}" if yesterday and current else "",
+            f"{((last_week - current) / last_week * 100):.1f}" if last_week and current else "",
             level
         ])
 
-    print(f"✅ Medición registrada – {now}")
+    print(f"✅ Medición registrada – {now} | {region_name}")
