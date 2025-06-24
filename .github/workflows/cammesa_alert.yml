@@ -47,6 +47,9 @@ jobs:
 
           git add mediciones.csv
 
+          # Opcional: forzar commit añadiendo una línea vacía al final del archivo
+          echo "" >> mediciones.csv
+
           git diff --staged --quiet
           if [ $? -eq 1 ]; then
             git commit -m "Actualizar mediciones.csv"
@@ -54,5 +57,5 @@ jobs:
             git push origin main
             echo "✅ Archivo actualizado en GitHub"
           else
-            echo "📎 No hubo cambios reales → omitiendo commit"
+            echo "📎 Sin cambios → omitiendo commit"
           fi
