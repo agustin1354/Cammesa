@@ -4,9 +4,8 @@ import csv
 from datetime import datetime
 import os
 
-
 def log_measurement(filepath="mediciones.csv", **kwargs):
-    timestamp = kwargs.get("timestamp", "")
+    timestamp_medicion = kwargs.get("timestamp", "")
     region_id = kwargs.get("region_id", "")
     region_name = kwargs.get("region_name", "")
     current = kwargs.get("hoy", "")
@@ -14,7 +13,9 @@ def log_measurement(filepath="mediciones.csv", **kwargs):
     last_week = kwargs.get("semana_anterior", "")
     level = kwargs.get("nivel_alerta", "NINGUNA")
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Marca de tiempo única por ejecución
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # ✅ Marca única por ejecución
+    porcentaje_ayer = ((yesterday - current) / yesterday * 100) if yesterday and current else 0
+    porcentaje_semana = ((last_week - current) / last_week * 100) if last_week and current else 0
 
     file_exists = os.path.exists(filepath)
 
@@ -35,15 +36,15 @@ def log_measurement(filepath="mediciones.csv", **kwargs):
             ])
         writer.writerow([
             now,
-            timestamp,
+            timestamp_medicion,
             region_id,
             region_name,
-            f"{current:.1f}",
-            f"{yesterday:.1f}" if yesterday else "",
-            f"{last_week:.1f}" if last_week else "",
-            f"{((yesterday - current) / yesterday * 100):.1f}" if yesterday and current else "",
-            f"{((last_week - current) / last_week * 100):.1f}" if last_week and current else "",
+            current,
+            yesterday,
+            last_week,
+            f"{porcentaje_ayer:.1f}",
+            f"{porcentaje_semana:.1f}",
             level
         ])
 
-    print(f"✅ Medición guardada en {filepath}")
+    print(f"✅ Medición registrada – {now}")
