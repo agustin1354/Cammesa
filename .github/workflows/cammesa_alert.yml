@@ -36,14 +36,17 @@ jobs:
             echo "✅ Archivo CSV generado"
             tail -n 2 mediciones.csv
           else
-            echo "❌ Archivo CSV NO encontrado"
             touch mediciones.csv
+            echo "🆕 Archivo CSV creado vacío"
           fi
 
       - name: Add unique line to force git change
+        id: add_line
         run: |
-          echo "$(date '+%Y-%m-%d %H:%M:%S') - Registro único" >> mediciones.csv
-          echo "📎 Línea única añadida para forzar diferencia"
+          UNIQUE_LINE="$(date '+%Y-%m-%d %H:%M:%S') - Registro único"
+          echo "$UNIQUE_LINE" >> mediciones.csv
+          echo "::set-output name=unique_line::$UNIQUE_LINE"
+          echo "📎 Línea única añadida: $UNIQUE_LINE"
 
       - name: Commit changes to GitHub
         run: |
@@ -52,12 +55,14 @@ jobs:
 
           git add mediciones.csv
 
-          git diff --staged --quiet
-          if [ $? -eq 1 ]; then
+          # Verificar si hay cambios (con diff)
+          CHANGES=$(git diff --staged --exit-code || true)
+
+          if [ -z "$CHANGES" ]; then
+            echo "📎 No hay cambios reales → omitiendo commit"
+          else
             git commit -m "Actualizar mediciones.csv"
             git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
             git push origin main
             echo "✅ Archivo actualizado en GitHub"
-          else
-            echo "📎 No hubo cambios reales → omitiendo commit"
           fi
