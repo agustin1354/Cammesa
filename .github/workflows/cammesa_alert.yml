@@ -45,12 +45,21 @@ jobs:
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          # Generar marca de tiempo única y guardarla en el CSV
-          echo "🔄 Asegurando medición única..."
+          # Verificar si existe el archivo y mostrar contenido
+          if [ -f "mediciones.csv" ]; then
+            echo "📄 Archivo encontrado"
+          else
+            echo "🆕 Creando archivo mediciones.csv..."
+            touch mediciones.csv
+          fi
 
-          # Añadir medición única o hacer commit solo si hay datos nuevos
+          # Opcional: forzar cambio agregando una línea al final
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - Registro único" >> mediciones.csv
+
+          # Agregar archivo al staging area
           git add mediciones.csv
 
+          # Verificar si hay cambios reales
           git diff --staged --quiet
           if [ $? -eq 1 ]; then
             git commit -m "Actualizar mediciones.csv"
