@@ -3,7 +3,7 @@
 from data_fetcher import get_demand_comparison_values
 from detector import check_peak
 from notifier import send_email
-from logger import log_alert
+from logger import log_measurement
 from config import THRESHOLDS, REGIONS, CSV_FILE_PATH, RAW_REGION_DATA
 from utils import get_region_level
 from datetime import datetime
@@ -30,6 +30,18 @@ def job():
         # Obtener el nivel de la región
         level = get_region_level(region_id, RAW_REGION_DATA)
 
+        # Guardar siempre la medición
+        log_measurement(
+            filepath="mediciones.csv",
+            timestamp=timestamp,
+            region_id=region_id,
+            region_name=region_name,
+            hoy=current,
+            ayer=yesterday,
+            semana_anterior=last_week,
+            nivel_alerta=level
+        )
+        
         # Asignar umbrales según nivel
         threshold_daily = THRESHOLDS[level]["THRESHOLD_DAILY"]
         threshold_last_measurement = THRESHOLDS[level]["THRESHOLD_LAST_MEASUREMENT"]
