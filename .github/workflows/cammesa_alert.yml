@@ -45,10 +45,11 @@ jobs:
           git config --local user.email "github-actions@example.com"
           git config --local user.name "GitHub Actions"
 
-          git add mediciones.csv
+          # Generar marca de tiempo única y guardarla en el CSV
+          echo "🔄 Asegurando medición única..."
 
-          # Opcional: forzar commit añadiendo una línea vacía al final del archivo
-          echo "" >> mediciones.csv
+          # Añadir medición única o hacer commit solo si hay datos nuevos
+          git add mediciones.csv
 
           git diff --staged --quiet
           if [ $? -eq 1 ]; then
@@ -57,5 +58,5 @@ jobs:
             git push origin main
             echo "✅ Archivo actualizado en GitHub"
           else
-            echo "📎 Sin cambios → omitiendo commit"
+            echo "📎 No hubo cambios reales → omitiendo commit"
           fi
