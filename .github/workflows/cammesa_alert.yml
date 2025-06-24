@@ -23,10 +23,36 @@ jobs:
           pip install --upgrade pip
           pip install requests schedule
 
-      - name: Run script
+      - name: Run script and save measurements
         env:
           EMAIL_ALERT_TO: ${{ secrets.EMAIL_ALERT_TO }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: |
+          echo "🔄 Ejecutando script principal..."
           python main.py
+
+          if [ -f "mediciones.csv" ]; then
+            echo "✅ Archivo generado"
+            cat mediciones.csv
+          else
+            echo "❌ Archivo NO generado"
+            touch mediciones.csv
+          fi
+
+      - name: Commit changes to GitHub
+        run: |
+          git config --local user.email "github-actions@example.com"
+          git config --local user.name "GitHub Actions"
+
+          git add mediciones.csv
+
+          git diff --staged --quiet
+          if [ $? -eq 1 ]; then
+            git commit -m "Actualizar mediciones.csv"
+            git remote set-url origin https://x-access-token:${{  secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+            git push origin main
+            echo "✅ Archivo actualizado en GitHub"
+          else
+            echo "📎 No hubo cambios reales → omitiendo commit"
+          fi
