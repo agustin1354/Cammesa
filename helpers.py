@@ -1,5 +1,7 @@
 # helpers.py
 
+from config import THRESHOLDS
+
 def generate_alert_html(region_name, region_id, timestamp, current, yesterday, last_week, history, reasons, a_threshold, b_threshold, level):
     """
     Genera cuerpo HTML del correo de alerta
