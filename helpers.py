@@ -43,7 +43,7 @@ def generate_alert_html(region_name, region_id, timestamp, current, yesterday, l
         </table>
 
         <br>
-        <h2 style="color:#3F51B5;">📍 Región: {region_name} (ID: {region_id})</h2>
+        <h2 style="color:#3F51B5;">📍 {level}: {region_name} (ID: {region_id})</h2>
         <p><strong>Hora:</strong> {timestamp}</p>
 
         <h2 style="color:#3F51B5;">📊 Valores registrados</h2>
