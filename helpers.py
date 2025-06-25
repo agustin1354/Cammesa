@@ -27,18 +27,18 @@ def generate_alert_html(region_name, region_id, timestamp, current, yesterday, l
             </tr>
             <tr style="text-align: center;">
                 <td style="border: 1px solid #ccc; padding: 6px;">Provincia</td>
-                <td style="border: 1px solid #ccc; padding: 6px;">≥{THRESHOLDS['PROVINCIA']['THRESHOLD_DAILY']}%</td>
-                <td style="border: 1px solid #ccc; padding: 6px;">≥{THRESHOLDS['PROVINCIA']['THRESHOLD_LAST_MEASUREMENT']}%</td>
+                <td style="border: 1px solid #ccc; padding: 6px;">≥ {THRESHOLDS['PROVINCIA']['THRESHOLD_DAILY']}%</td>
+                <td style="border: 1px solid #ccc; padding: 6px;">≥ {THRESHOLDS['PROVINCIA']['THRESHOLD_LAST_MEASUREMENT']}%</td>
             </tr>
             <tr style="text-align: center;">
                 <td style="border: 1px solid #ccc; padding: 6px;">Región</td>
-                <td style="border: 1px solid #ccc; padding: 6px;">≥{THRESHOLDS['REGION']['THRESHOLD_DAILY']}%</td>
-                <td style="border: 1px solid #ccc; padding: 6px;">≥{THRESHOLDS['REGION']['THRESHOLD_LAST_MEASUREMENT']}%</td>
+                <td style="border: 1px solid #ccc; padding: 6px;">≥ {THRESHOLDS['REGION']['THRESHOLD_DAILY']}%</td>
+                <td style="border: 1px solid #ccc; padding: 6px;">≥ {THRESHOLDS['REGION']['THRESHOLD_LAST_MEASUREMENT']}%</td>
             </tr>
             <tr style="text-align: center;">
                 <td style="border: 1px solid #ccc; padding: 6px;">País</td>
-                <td style="border: 1px solid #ccc; padding: 6px;">≥{THRESHOLDS['PAIS']['THRESHOLD_DAILY']}%</td>
-                <td style="border: 1px solid #ccc; padding: 6px;">≥{THRESHOLDS['PAIS']['THRESHOLD_LAST_MEASUREMENT']}%</td>
+                <td style="border: 1px solid #ccc; padding: 6px;">≥ {THRESHOLDS['PAIS']['THRESHOLD_DAILY']}%</td>
+                <td style="border: 1px solid #ccc; padding: 6px;">≥ {THRESHOLDS['PAIS']['THRESHOLD_LAST_MEASUREMENT']}%</td>
             </tr>
         </table>
 
