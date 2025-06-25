@@ -7,7 +7,7 @@ from logger import log_measurement
 from config import THRESHOLDS, REGIONS, CSV_FILE_PATH, RAW_REGION_DATA
 from utils import get_region_level
 from datetime import datetime
-
+from helpers import generate_alert_html
 
 def job():
     print("🔄 Iniciando revisión de todas las regiones...")
