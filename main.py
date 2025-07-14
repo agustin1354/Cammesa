@@ -57,6 +57,18 @@ def job():
         )
 
         if is_peak:
+            # Guardar la medición cuando hay pico
+            log_measurement(
+                filepath="mediciones.csv",
+                timestamp=timestamp,
+                region_id=region_id,
+                region_name=region_name,
+                hoy=current,
+                ayer=yesterday,
+                semana_anterior=last_week,
+                nivel_alerta=level
+            )
+            
             print(f"[{region_id}] ⚠️ Alerta disparada ({level})")
 
             mensaje_html = generate_alert_html(
@@ -72,6 +84,8 @@ def job():
                 b_threshold=threshold_last_measurement,
                 level=level
             )
+
+
             subject_email = f"⚠️ [ALERTA] Caída significativa – {region_name}"
 
             try:
