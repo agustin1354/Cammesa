@@ -9,6 +9,7 @@ def log_measurement(filepath="mediciones.csv", **kwargs):
     region_id = kwargs.get("region_id", "")
     region_name = kwargs.get("region_name", "")
     current = kwargs.get("hoy", "")
+    previous_measurement = kwargs.get("anterior", "")
     yesterday = kwargs.get("ayer", "")
     last_week = kwargs.get("semana_anterior", "")
     level = kwargs.get("nivel_alerta", "NINGUNA")
