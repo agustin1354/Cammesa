@@ -48,4 +48,4 @@ def check_peak(current, yesterday, last_week, history, threshold_daily, threshol
     else:
         print("⚠️ No hay suficientes mediciones válidas para comparar")
 
-    return condition_1 or condition_2, reasons
+    return condition_1 or condition_2, reasons, previous_measurement
