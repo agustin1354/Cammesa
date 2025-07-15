@@ -35,7 +35,7 @@ def job():
         threshold_last_measurement = THRESHOLDS[level]["THRESHOLD_LAST_MEASUREMENT"]
 
         # Detectar alerta
-        is_peak, reasons = check_peak(
+        is_peak, reasons, previous_measurement = check_peak(
             current=current,
             yesterday=yesterday,
             last_week=last_week,
@@ -52,6 +52,7 @@ def job():
                 region_id=region_id,
                 region_name=region_name,
                 hoy=current,
+                anterior=previous_measurement,
                 ayer=yesterday,
                 semana_anterior=last_week,
                 nivel_alerta=level
