@@ -29,18 +29,6 @@ def job():
 
         # Obtener el nivel de la región
         level = get_region_level(region_id, RAW_REGION_DATA)
-
-        # Guardar siempre la medición
-        log_measurement(
-            filepath="mediciones.csv",
-            timestamp=timestamp,
-            region_id=region_id,
-            region_name=region_name,
-            hoy=current,
-            ayer=yesterday,
-            semana_anterior=last_week,
-            nivel_alerta=level
-        )
         
         # Asignar umbrales según nivel
         threshold_daily = THRESHOLDS[level]["THRESHOLD_DAILY"]
