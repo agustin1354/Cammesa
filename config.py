@@ -51,15 +51,15 @@ RAW_REGION_DATA = [
 # Umbrales por nivel
 THRESHOLDS = {
     "PROVINCIA": {
-        "THRESHOLD_DAILY": 60,
+        "THRESHOLD_DAILY": 80,
         "THRESHOLD_LAST_MEASUREMENT": 20
     },
     "REGION": {
-        "THRESHOLD_DAILY": 50,
+        "THRESHOLD_DAILY": 75,
         "THRESHOLD_LAST_MEASUREMENT": 15
     },
     "PAIS": {
-        "THRESHOLD_DAILY": 40,
+        "THRESHOLD_DAILY": 70,
         "THRESHOLD_LAST_MEASUREMENT": 10
     }
 }
